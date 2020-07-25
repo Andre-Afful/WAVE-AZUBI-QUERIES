@@ -46,7 +46,6 @@ GROUP BY agents.city
 -- Creation of a table by joining fields (identify and create foreign key) from other tables and the use of aliases.
 Using the CREATE VIEW, columns can be added on to the table.
 
- 
 
 --QUESTION #7
 CREATE VIEW atx_volume_city_summary_by_country AS
@@ -55,8 +54,6 @@ INNER JOIN agent_transactions
 ON agents.agent_id = agent_transactions.agent_id
 WHERE (agent_transactions.when_created > (NOW() - INTERVAL '1 week'))
 GROUP BY agents.country, agents.city
-
- 
 
 --QUESTION #8
 CREATE VIEW send_volume_by_country_and_kind AS
