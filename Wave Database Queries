@@ -8,10 +8,8 @@ WHERE send_amount_currency='CFA';
 --  Just like question 1, we are looking out for a total numbers or counts of a field, in ths case, a specific value in the field send_amount_currency which is CFA.
 
 --QUESTION #3
-SELECT DISTINCT COUNT(u_id) AS cfa_user_transfers FROM transfers
-WHERE send_amount_currency = 'CFA';
--- In determining the different users who have sent have sent transfer in CFA, first of all, they should should have unique value, and this can be represented as the primary key, in this case, the 'u_id'.
-To identify the different users who use CFA, have to disitnguish or isolate them from the other users
+SELECT COUNT(DISTINCT u_id) AS cfa_user_transfers FROM transfers
+WHERE send_amount_currency = 'CFA'; 
 
 --QUESTION #4
 SELECT TO_CHAR(TO_DATE (EXTRACT(MONTH FROM when_created)::text, 'MM'), 'Month') AS transaction_month,
@@ -66,16 +64,14 @@ WHERE (transfers.when_created > (NOW() - INTERVAL '1 week'))
 GROUP BY wallets.ledger_location, transfers.kind
                                        
 --QUESTION #9
-SELECT 
-COUNT(transfers.source_wallet_id) AS Unique_Senders,
-COUNT(transfer_id) AS transaction_count,
-transfers.kind AS Transfer_Kind,
-wallets.ledger_location AS Country, 
-SUM(transfers.send_amount_scalar) AS Volume 
-FROM transfers 
-INNER JOIN wallets 
+CREATE OR REPLACE VIEW send_volume_by_country_and_kind AS
+SELECT transfers.kind AS transfer_kind, wallets.ledger_location AS country,
+SUM(transfers.send_amount_scalar) AS volume, COUNT(transfers.send_amount_scalar) AS trans_count,
+COUNT(DISTINCT transfers.source_wallet_id) AS unique_senders
+FROM transfers
+INNER JOIN wallets
 ON transfers.source_wallet_id = wallets.wallet_id
-WHERE (transfers.when_created > (NOW() - INTERVAL '1 week'))                                       
+WHERE (transfers.when_created > (NOW() - INTERVAL '1 week'))                                      
 GROUP BY wallets.ledger_location, transfers.kind;         
                                        
 --QUESTION #10
