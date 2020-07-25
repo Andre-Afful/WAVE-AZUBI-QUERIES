@@ -99,5 +99,8 @@ NOW()::DATE-EXTRACT(DOW FROM NOW())::INTEGER-7 
 GROUP BY wallets.ledger_location, transfers.kind; 
 
 --QUESTION #10
-SELECT source_wallet_id, send_amount_scalar FROM transfers WHERE send_amount_currency = 'CFA'
-AND send_amount_scalar > 10000000 AND when_created > now()-interval '1 month' 
+SELECT source_wallet_id, send_amount_scalar
+FROM transfers
+WHERE (send_amount_currency ='CFA')
+AND (send_amount_scalar > 10000000)
+AND (EXTRACT(MONTH FROM when_created) = EXTRACT(MONTH FROM NOW()) - 1) 
